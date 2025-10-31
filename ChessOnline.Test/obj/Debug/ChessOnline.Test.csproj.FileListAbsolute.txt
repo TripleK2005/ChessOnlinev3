@@ -1,0 +1,15 @@
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\bin\Debug\Microsoft.TestPlatform.AdapterUtilities.dll
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\bin\Debug\ChessOnline.Test.dll
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\bin\Debug\ChessOnline.Test.pdb
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\obj\Debug\ChessOnline.Test.csproj.AssemblyReference.cache
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\obj\Debug\ChessOnline.Test.csproj.CoreCompileInputs.cache
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\obj\Debug\ChessOnl.56F83085.Up2Date
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\obj\Debug\ChessOnline.Test.dll
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Test\obj\Debug\ChessOnline.Test.pdb

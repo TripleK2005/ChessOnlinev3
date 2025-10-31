@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ChessOnline</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+</head>
+<body class="auth-page">
+    @{
+        var action = ViewContext.RouteData.Values["action"]?.ToString()?.ToLowerInvariant();
+        var isRegister = string.Equals(action, "register", StringComparison.OrdinalIgnoreCase);
+        var isLogin = string.Equals(action, "login", StringComparison.OrdinalIgnoreCase);
+    }
+
+    <div class="container-fluid auth-split d-flex align-items-center p-0">
+        <div class="row g-0 w-100">
+            <!-- Left column: promo or login form -->
+            <div class="col-12 col-md-6 position-relative d-flex align-items-center justify-content-center order-1">
+                @if (isLogin)
+                {
+                    <div class="auth-card-wrapper">
+                        @RenderBody()
+                    </div>
+                }
+                else
+                {
+                    <div class="promo-bg promo text-center w-100 h-100 d-flex flex-column justify-content-center align-items-center p-4">
+                        <div class="promo-inner">
+                            <h1 class="display-5 fw-bold">Chào mừng đến với Bàn Cờ</h1>
+                            <p class="lead mt-3 mb-0">Nơi mọi nước đi đều quan trọng. Tham gia cộng đồng và thử thách kỹ năng của bạn.</p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Right column: register form or promo -->
+            <div class="col-12 col-md-6 position-relative d-flex align-items-center justify-content-center order-2">
+                @if (isRegister)
+                {
+                    <div class="auth-card-wrapper">
+                        @RenderBody()
+                    </div>
+                }
+                else if (!isLogin)
+                {
+                    <div class="auth-card-wrapper">
+                        @RenderBody()
+                    </div>
+                }
+                else
+                {
+                    <div class="promo-bg promo text-center text-muted w-100 h-100 d-flex flex-column justify-content-center align-items-center p-4">
+                        <div class="promo-inner">
+                            <p class="mb-0">Don’t have an account?</p>
+                            <a asp-action="Register" class="btn btn-outline-light mt-3">Create account</a>
+                        </div>  
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

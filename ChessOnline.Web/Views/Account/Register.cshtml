@@ -1,0 +1,57 @@
+﻿@model ChessOnline.Web.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<link rel="stylesheet" href="~/css/auth.css" />
+
+<div class="auth-page">
+    <div class="auth-card">
+        <h2 class="auth-title">
+            <i class="bi bi-hourglass-split me-2"></i>
+            ChessOnline - Register
+        </h2>
+
+        <form id="registerForm" asp-action="Register" method="post" class="auth-form">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label asp-for="UserName"></label>
+                <input asp-for="UserName" class="form-control" placeholder="Enter username" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" placeholder="Enter email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NickName"></label>
+                <input asp-for="NickName" class="form-control" placeholder="Enter display name (nickname)" />
+                <span asp-validation-for="NickName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ConfirmPassword"></label>
+                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm password" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mt-2">Register</button>
+        </form>
+
+        <div class="auth-footer">
+            <span>Already have an account?</span>
+            <a asp-action="Login" class="text-warning fw-semibold">Login</a>
+        </div>
+    </div>
+</div>
+@* <script src="~/js/auth.js"></script> *@

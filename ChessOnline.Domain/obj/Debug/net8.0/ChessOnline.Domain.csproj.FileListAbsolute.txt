@@ -1,0 +1,12 @@
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Domain\bin\Debug\net8.0\ChessOnline.Domain.deps.json
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Domain\bin\Debug\net8.0\ChessOnline.Domain.dll
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Domain\bin\Debug\net8.0\ChessOnline.Domain.pdb
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Domain\obj\Debug\net8.0\ChessOnline.Domain.csproj.AssemblyReference.cache
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Domain\obj\Debug\net8.0\ChessOnline.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Domain\obj\Debug\net8.0\ChessOnline.Domain.AssemblyInfoInputs.cache
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Domain\obj\Debug\net8.0\ChessOnline.Domain.AssemblyInfo.cs
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Domain\obj\Debug\net8.0\ChessOnline.Domain.csproj.CoreCompileInputs.cache
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Domain\obj\Debug\net8.0\ChessOnline.Domain.dll
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Domain\obj\Debug\net8.0\refint\ChessOnline.Domain.dll
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Domain\obj\Debug\net8.0\ChessOnline.Domain.pdb
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Domain\obj\Debug\net8.0\ref\ChessOnline.Domain.dll

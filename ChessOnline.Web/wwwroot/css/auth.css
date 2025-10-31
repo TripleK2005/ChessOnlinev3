@@ -1,0 +1,205 @@
+﻿        /*.container-fluid {*/
+            /*    background-color: rebeccapurple;*/
+                /*background-image: url('/img/auth-background.jpg');
+            }*/
+    .auth-page {
+        position: relative;
+        z-index: 1;
+        height: 100vh;
+        /*    background-image:url('/img/auth-background.jpg');
+        background-size: cover;*/
+        background-position: center;
+        background-repeat: no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .auth-bg {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        overflow: hidden;
+    }
+    
+    /* Each background layer */
+    .auth-bg .bg-item {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0;
+        transition: opacity .45s ease;
+        will-change: opacity;
+        filter: brightness(.62) saturate(.95);
+    }
+    
+    /* Active layer is visible */
+    .auth-bg .bg-item.active {
+        opacity: 1;
+    }
+    
+    /* default images (place these files under wwwroot/img/) */
+    .auth-bg .bg-item.bg-login {
+        background-image: url('/img/auth-bg-login.jpg');
+    }
+    .auth-bg .bg-item.bg-register {
+        background-image: url('/img/auth-bg-register.jpg');
+    }
+    
+    /* Container / split */
+.auth-split {
+    min-height: 100vh;
+}
+
+/* Ensure each column is full height so background covers properly */
+.auth-split .col-12,
+.auth-split .col-md-6 {
+    min-height: 100vh;
+}
+
+/* promo background that fills its column and does not repeat */
+.promo-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    /* overlay + image (no repeat, cover) */
+    background-image:
+        linear-gradient(rgba(6,10,20,0.45), rgba(6,10,20,0.45)),
+        url('/img/auth-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll; /* avoid tiling issues on some browsers */
+    color: #fff;
+}
+
+/* promo inner (text/buttons) should be clickable */
+.promo-bg .promo-inner {
+    position: relative;
+    z-index: 2;
+    pointer-events: auto;
+    max-width: 560px;
+    padding: 0 1rem;
+}
+
+/* keep form/card above the background */
+.auth-card-wrapper {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+/* Card look: use a darker translucent background instead of white */
+.auth-card {
+    width: 420px;
+    padding: 35px 40px;
+    background: linear-gradient(180deg, rgba(8,14,22,0.92), rgba(16,24,36,0.86));
+    border-radius: 16px;
+    box-shadow: 0 18px 40px rgba(6,10,20,0.6);
+    color: #e7eef8;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.03);
+}
+    
+    .auth-title {
+        margin-bottom: 25px;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #e8e8e8;
+    }
+    
+    .auth-form .form-group {
+        text-align: left;
+        margin-bottom: 18px;
+    }
+    
+    .auth-form label {
+        font-weight: 500;
+        color: #ddd;
+        font-size: 0.9rem;
+    }
+    
+    .auth-form .form-control {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.04);
+        color: #e7eef8;
+        padding: 10px 14px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.04);
+        color: #e7eef8;
+        padding: 10px 14px;
+        border-radius: 8px;
+        color: #fff;
+        padding: 10px 14px;
+    }
+    
+    .auth-form .form-control:focus {
+        background: rgba(255,255,255,0.12);
+        box-shadow: 0 0 0 2px rgba(0,123,255,0.15);
+        color: #fff;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(90deg, #007bff, #0056ff);
+        border: none;
+        padding: 10px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: 0.2s ease;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(90deg, #0056ff, #007bff);
+        transform: translateY(-1px);
+    }
+    
+    .auth-footer {
+        margin-top: 20px;
+        font-size: 0.9rem;
+        color: #ccc;
+    }
+/* promo background that fills its column and does not repeat */
+.promo-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none; /* keep clicks to card when card is present */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    /* overlay + image (no repeat, cover) */
+    background-image:
+        linear-gradient(rgba(6,10,20,0.55), rgba(6,10,20,0.55)),
+        url('/img/auth-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    color: #fff;
+}
+
+/* ensure promo content (texts / buttons) are clickable */
+.promo-bg .promo-inner {
+    position: relative;
+    z-index: 2;
+    pointer-events: auto;
+}
+
+/* keep form/card above the background */
