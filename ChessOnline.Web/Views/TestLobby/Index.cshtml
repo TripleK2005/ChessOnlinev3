@@ -1,0 +1,220 @@
+﻿@{
+    ViewData["Title"] = "Test Lobby";
+}
+
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+<div class="container mt-4">
+    <h2>Test Lobby</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Create Lobby</h4>
+            <form id="createForm">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Lobby Name</label>
+                    <input id="name" class="form-control" placeholder="Optional — default uses your nickname" />
+                </div>
+
+                <div class="form-check mb-2">
+                    <input id="isPublic" class="form-check-input" type="checkbox" checked />
+                    <label class="form-check-label" for="isPublic">Public</label>
+                </div>
+
+                <div class="mb-3" id="passwordRow" style="display:none;">
+                    <label for="password" class="form-label">Password (for private)</label>
+                    <input id="password" class="form-control" placeholder="Password" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="initialTime" class="form-label">Initial time (seconds)</label>
+                    <input id="initialTime" type="number" class="form-control" value="300" min="10" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="increment" class="form-label">Increment (seconds)</label>
+                    <input id="increment" type="number" class="form-control" value="3" min="0" />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create Lobby</button>
+            </form>
+
+            <div id="createResult" class="mt-3"></div>
+        </div>
+
+        <div class="col-md-6">
+            <h4>Join Lobby</h4>
+            <form id="joinForm">
+                <div class="mb-3">
+                    <label for="joinLobbyId" class="form-label">Lobby Id</label>
+                    <input id="joinLobbyId" class="form-control" placeholder="Paste lobby id" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="joinPassword" class="form-label">Password (if any)</label>
+                    <input id="joinPassword" class="form-control" placeholder="Password" />
+                </div>
+
+                <button type="submit" class="btn btn-success">Join</button>
+            </form>
+
+            <div id="joinResult" class="mt-3"></div>
+
+            <hr />
+
+            <div class="d-flex justify-content-between align-items-center">
+                <h5>Available Lobbies</h5>
+                <button id="refreshBtn" class="btn btn-sm btn-outline-secondary">Refresh</button>
+            </div>
+            <ul id="lobbyList" class="list-group mt-2"></ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const createForm = document.getElementById('createForm');
+            const isPublic = document.getElementById('isPublic');
+            const passwordRow = document.getElementById('passwordRow');
+            const createResult = document.getElementById('createResult');
+
+            const joinForm = document.getElementById('joinForm');
+            const joinResult = document.getElementById('joinResult');
+
+            const refreshBtn = document.getElementById('refreshBtn');
+            const lobbyList = document.getElementById('lobbyList');
+
+            // toggle password input for private lobbies
+            isPublic.addEventListener('change', () => {
+                passwordRow.style.display = isPublic.checked ? 'none' : 'block';
+            });
+
+            createForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                createResult.innerHTML = '';
+
+                const dto = {
+                    name: document.getElementById('name').value || '',
+                    isPublic: document.getElementById('isPublic').checked,
+                    password: document.getElementById('password').value || null,
+                    initialTimeSeconds: parseInt(document.getElementById('initialTime').value || '300', 10),
+                    incrementSeconds: parseInt(document.getElementById('increment').value || '3', 10)
+                };
+
+                try {
+                    const res = await fetch('/TestLobby/Create', {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dto)
+                    });
+
+                    const json = await res.json();
+                    if (!res.ok) {
+                        createResult.innerHTML = `<div class="alert alert-danger">Error: ${json?.message || res.statusText}</div>`;
+                        return;
+                    }
+
+                    const playUrl = json.playUrl || `/Game/Play/${json.lobbyId}`;
+                    createResult.innerHTML = `
+                        <div class="alert alert-success">
+                            Lobby created — <strong>${json.name}</strong><br/>
+                            LobbyId: <code>${json.lobbyId}</code><br/>
+                            <a class="btn btn-sm btn-primary mt-2" href="${playUrl}">Open Play View</a>
+                        </div>`;
+                    // refresh list
+                    loadLobbies();
+                } catch (err) {
+                    createResult.innerHTML = `<div class="alert alert-danger">Network error</div>`;
+                    console.error(err);
+                }
+            });
+
+            joinForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                joinResult.innerHTML = '';
+
+                const payload = {
+                    lobbyId: document.getElementById('joinLobbyId').value,
+                    password: document.getElementById('joinPassword').value || null
+                };
+
+                try {
+                    const res = await fetch('/TestLobby/Join', {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const json = await res.json();
+                    if (!res.ok) {
+                        joinResult.innerHTML = `<div class="alert alert-danger">Error: ${json?.message || res.statusText}</div>`;
+                        return;
+                    }
+
+                    joinResult.innerHTML = `<div class="alert alert-success">${json.message}</div>
+                        <a class="btn btn-sm btn-primary mt-2" href="/Game/Play/${json.lobbyId}">Open Play View</a>`;
+                    loadLobbies();
+                } catch (err) {
+                    joinResult.innerHTML = `<div class="alert alert-danger">Network error</div>`;
+                    console.error(err);
+                }
+            });
+
+            refreshBtn.addEventListener('click', loadLobbies);
+
+            async function loadLobbies() {
+                lobbyList.innerHTML = '';
+                try {
+                    const res = await fetch('/TestLobby/List', { credentials: 'same-origin' });
+                    if (!res.ok) {
+                        lobbyList.innerHTML = `<li class="list-group-item text-danger">Failed to load</li>`;
+                        return;
+                    }
+
+                    const items = await res.json();
+                    if (!items || items.length === 0) {
+                        lobbyList.innerHTML = `<li class="list-group-item">No available lobbies</li>`;
+                        return;
+                    }
+
+                    items.forEach(l => {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item d-flex justify-content-between align-items-start';
+                        const left = document.createElement('div');
+                        left.innerHTML = `<div><strong>${l.name}</strong> <small class="text-muted">(${l.id})</small></div>
+                                          <div><small>Host: ${l.player1Name ?? l.player1Id}</small></div>
+                                          <div><small>Time: ${l.initialTimeSeconds}s + ${l.incrementSeconds}s</small></div>`;
+                        const right = document.createElement('div');
+                        const playLink = document.createElement('a');
+                        playLink.className = 'btn btn-sm btn-outline-primary me-2';
+                        playLink.href = `/Game/Play/${l.id}`;
+                        playLink.textContent = 'Open Play';
+                        const joinBtn = document.createElement('button');
+                        joinBtn.className = 'btn btn-sm btn-success';
+                        joinBtn.textContent = 'Join';
+                        joinBtn.addEventListener('click', async () => {
+                            document.getElementById('joinLobbyId').value = l.id;
+                            document.getElementById('joinPassword').value = '';
+                        });
+
+                        right.appendChild(playLink);
+                        right.appendChild(joinBtn);
+
+                        li.appendChild(left);
+                        li.appendChild(right);
+                        lobbyList.appendChild(li);
+                    });
+                } catch (err) {
+                    lobbyList.innerHTML = `<li class="list-group-item text-danger">Network error</li>`;
+                    console.error(err);
+                }
+            }
+
+            // initial load
+            loadLobbies();
+        })();
+    </script>
+}
