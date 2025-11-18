@@ -39,7 +39,7 @@ namespace ChessOnline.Web.Controllers
                 return Json(new { success = false, message = msg });
             }
 
-            return Json(new { success = true });
+            return RedirectToAction("Login", "Account");
         }
 
         [HttpGet]
@@ -66,7 +66,8 @@ namespace ChessOnline.Web.Controllers
                 return Json(new { success = false, message = msg });
             }
 
-            return Json(new { success = true });
+            // Redirect to home page after successful login
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]

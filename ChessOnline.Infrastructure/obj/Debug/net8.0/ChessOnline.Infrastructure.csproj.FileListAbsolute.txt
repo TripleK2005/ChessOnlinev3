@@ -17,3 +17,4 @@ D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Infrastructure\obj\Debug\net8.
 D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Infrastructure\obj\Debug\net8.0\ChessOnline.Infrastructure.pdb
 D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Infrastructure\obj\Debug\net8.0\ChessOnline.Infrastructure.genruntimeconfig.cache
 D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Infrastructure\obj\Debug\net8.0\ref\ChessOnline.Infrastructure.dll
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Infrastructure\obj\Debug\net8.0\ChessOnline.Infrastructure.sourcelink.json

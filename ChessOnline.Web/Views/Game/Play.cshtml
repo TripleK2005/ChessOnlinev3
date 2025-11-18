@@ -1,0 +1,43 @@
+﻿@model ChessOnline.Web.Models.PlayViewModel
+
+@{
+    ViewData["Title"] = "Play";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css" />
+
+<div class="container mt-3">
+    <h3>Chess - Play</h3>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div id="board" style="width: 480px"></div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-2">
+                <strong>White</strong>: <span id="whiteName">White</span>
+                <div id="whiteClock" style="font-size:1.5rem">00:00</div>
+            </div>
+            <div class="mb-2">
+                <strong>Black</strong>: <span id="blackName">Black</span>
+                <div id="blackClock" style="font-size:1.5rem">00:00</div>
+            </div>
+            <div id="status" class="mt-3"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // pass server model data to JS
+        window.chessModel = {
+            LobbyId: '@Model.LobbyId',
+            CurrentUserId: '@Model.CurrentUserId'
+        };
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@7.0.5/dist/browser/signalr.min.js"></script>
+    <script src="~/js/chess-play.js"></script>
+}

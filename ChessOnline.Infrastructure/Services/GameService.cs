@@ -15,11 +15,13 @@ namespace ChessOnline.Infrastructure.Services
     {
         private readonly AppDbContext _db;
         private readonly UserManager<User> _userManager;
+        private readonly IGameNotifier _notifier;
 
-        public GameService(AppDbContext db, UserManager<User> userManager)
+        public GameService(AppDbContext db, UserManager<User> userManager, IGameNotifier notifier)
         {
             _db = db;
             _userManager = userManager;
+            _notifier = notifier;
         }
 
         // ================== CREATE LOBBY ==================
@@ -321,5 +323,46 @@ namespace ChessOnline.Infrastructure.Services
             return true;
         }
 
+        // ================== UPDATE CLOCKS ==================
+        public async Task<bool> UpdateClocksAsync(Guid lobbyId, int whiteRemainingSeconds, int blackRemainingSeconds)
+        {
+            var gp = await _db.GamePlays.FirstOrDefaultAsync(g => g.LobbyId == lobbyId);
+            if (gp != null)
+            {
+                gp.WhiteRemainingSeconds = whiteRemainingSeconds;
+                gp.BlackRemainingSeconds = blackRemainingSeconds;
+                _db.GamePlays.Update(gp);
+                await _db.SaveChangesAsync();
+
+                // Also notify clients about clock change (no fen change)
+                try
+                {
+                    await _notifier.NotifyMoveAsync(lobbyId, gp.CurrentFen, gp.MoveHistoryJson, gp.IsGameOver(), gp.WhiteRemainingSeconds, gp.BlackRemainingSeconds);
+                }
+                catch { }
+
+                return true;
+            }
+
+            var lobby = await _db.GameLobbies.FirstOrDefaultAsync(l => l.Id == lobbyId);
+            if (lobby != null)
+            {
+                // persist clocks in lobby for consistency
+                lobby.CurrentFen = lobby.CurrentFen ?? new ChessGame().GetFen();
+                _db.GameLobbies.Update(lobby);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
+        }
+
+    }
+    internal static class GamePlayExtensions
+    {
+        public static bool IsGameOver(this GamePlay gp)
+        {
+            return gp.Result != null && gp.Result != Domain.Enums.GameResult.Pending;
+        }
     }
 }

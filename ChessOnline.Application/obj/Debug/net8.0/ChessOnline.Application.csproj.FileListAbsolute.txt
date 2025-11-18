@@ -13,3 +13,4 @@ D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Application\obj\Debug\net8.0\C
 D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Application\obj\Debug\net8.0\refint\ChessOnline.Application.dll
 D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Application\obj\Debug\net8.0\ChessOnline.Application.pdb
 D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Application\obj\Debug\net8.0\ref\ChessOnline.Application.dll
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Application\obj\Debug\net8.0\ChessOnline.Application.sourcelink.json
