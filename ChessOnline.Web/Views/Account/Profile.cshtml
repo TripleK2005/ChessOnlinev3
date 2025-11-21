@@ -1,5 +1,91 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ChessOnline.Application.DTOs.Auth.UserProfileDto
 @{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container py-5 fade-in">
+    <div class="row">
+        <!-- Profile Card -->
+        <div class="col-lg-4 mb-4">
+            <div class="glass-card p-4 text-center h-100">
+                <div class="position-relative d-inline-block mb-3">
+                    <img src="/img/default-avatar.png" class="rounded-circle border border-2 border-primary p-1" width="120" height="120" alt="Avatar">
+                    <span class="position-absolute bottom-0 end-0 bg-success border border-dark rounded-circle p-2" title="Online"></span>
+                </div>
+                <h3 class="fw-bold mb-1">@Model.NickName</h3>
+                <p class="text-muted mb-3">@Model.Email</p>
+                
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-light rounded-pill"><i class="fa-solid fa-pen-to-square me-2"></i>Edit Profile</button>
+                    <button class="btn btn-outline-danger rounded-pill" id="logoutBtnProfile"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats & Activity -->
+        <div class="col-lg-8">
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="glass-card p-4 d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-25 p-3 rounded-circle me-3">
+                            <i class="fa-solid fa-trophy fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="text-muted mb-0">Elo Rating</h5>
+                            <h2 class="fw-bold mb-0">@Model.EloRating</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="glass-card p-4 d-flex align-items-center">
+                        <div class="bg-success bg-opacity-25 p-3 rounded-circle me-3">
+                            <i class="fa-solid fa-chart-pie fa-2x text-success"></i>
+                        </div>
+                        <div>
+                            <h5 class="text-muted mb-0">Win Rate</h5>
+                            <h2 class="fw-bold mb-0">@((Model.WinRate * 100).ToString("0.0"))%</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-4">
+                <h4 class="mb-4"><i class="fa-solid fa-chart-simple me-2 text-secondary"></i>Match Statistics</h4>
+                <div class="row text-center">
+                    <div class="col-4 border-end border-secondary">
+                        <h3 class="text-success fw-bold">@Model.Wins</h3>
+                        <small class="text-muted">Wins</small>
+                    </div>
+                    <div class="col-4 border-end border-secondary">
+                        <h3 class="text-danger fw-bold">@Model.Losses</h3>
+                        <small class="text-muted">Losses</small>
+                    </div>
+                    <div class="col-4">
+                        <h3 class="text-warning fw-bold">@Model.Draws</h3>
+                        <small class="text-muted">Draws</small>
+                    </div>
+                </div>
+                
+                <hr class="my-4 border-secondary" />
+                
+                <h5 class="mb-3">Recent Activity</h5>
+                <div class="text-center text-muted py-3">
+                    <i class="fa-solid fa-history mb-2"></i>
+                    <p>No recent matches found.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('logoutBtnProfile').addEventListener('click', function() {
+            $.post("/Account/Logout", function (res) {
+                if (res.success) {
+                    location.href = "/Account/Login";
+                }
+            });
+        });
+    </script>
 }

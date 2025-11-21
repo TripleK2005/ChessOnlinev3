@@ -3,10 +3,12 @@ using ChessOnline.Application.Validators;
 using ChessOnline.Domain.Entities;
 using ChessOnline.Infrastructure.Persistence;
 using ChessOnline.Infrastructure.Services;
+using ChessOnline.Web.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ChessOnline.Web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +28,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // 🔹 Identity
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
-    // Tuỳ chỉnh password (cho dễ test)
     options.Password.RequireDigit = false;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
@@ -36,12 +37,17 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
-//builder.Services.AddIdentityCore<User>()
-//    .AddEntityFrameworkStores<AppDbContext>()
-//    .AddSignInManager<SignInManager<User>>();
-
 // 🔹 Services
 builder.Services.AddScoped<IUserService, UserService>();
+
+// GameService lives in Infrastructure and depends on IGameNotifier (interface in Application)
+builder.Services.AddScoped<IGameService, GameService>();
+
+// IGameNotifier implementation in Web project that uses SignalR
+builder.Services.AddSingleton<IGameNotifier, GameNotifier>();
+
+// SignalR
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -63,6 +69,8 @@ app.UseStaticFiles();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-    //.WithStaticAssets();
+
+// Map SignalR hub
+app.MapHub<ChessHub>("/chessHub");
 
 app.Run();

@@ -4,55 +4,62 @@
 @inject UserManager<User> UserManager
 
 <!DOCTYPE html>
-<html lang="en">
-    @RenderSection("Styles", required: false)
-
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ChessOnline.Web</title>
+    <title>@ViewData["Title"] - ChessOnline</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ChessOnline.Web.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">ChessOnline</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-transparent fixed-top glass-nav">
+            <div class="container">
+                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
+                    <i class="fa-solid fa-chess-knight me-2"></i>ChessOnline
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Privacy">Chính sách</a>
+                            <a class="nav-link" asp-controller="Game" asp-action="Lobby">Play Now</a>
                         </li>
                     </ul>
 
-                    <ul class="navbar-nav ms-auto">
+                    <ul class="navbar-nav ms-auto align-items-center">
                         @if (SignInManager.IsSignedIn(User))
                         {
                             var currentUser = await UserManager.GetUserAsync(User);
-                            <li class="nav-item">
-                                <span class="nav-link">👋 Xin chào, <strong>@currentUser?.NickName</strong></span>
-                            </li>
-                            <li class="nav-item">
-                                <a id="btnLogout" class="nav-link text-danger" href="#">Đăng xuất</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    <img src="@(currentUser?.AvatarUrl ?? "/img/default-avatar.png")" class="rounded-circle me-1" width="30" height="30" alt="User" />
+                                    @currentUser?.NickName
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end glass-dropdown">
+                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">Profile</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a id="btnLogout" class="dropdown-item text-danger" href="#">Logout</a></li>
+                                </ul>
                             </li>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Đăng nhập</a>
+                            <li class="nav-item me-2">
+                                <a class="btn btn-outline-light btn-sm rounded-pill px-3" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Đăng ký</a>
+                                <a class="btn btn-primary btn-sm rounded-pill px-3" asp-controller="Account" asp-action="Register">Sign Up</a>
                             </li>
                         }
                     </ul>
@@ -61,25 +68,24 @@
         </nav>
     </header>
 
-    <div class="container">
+    <div class="main-content">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - ChessOnline.Web - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="footer text-muted mt-auto py-3 glass-footer">
+        <div class="container text-center">
+            &copy; 2025 - ChessOnline - <a asp-controller="Home" asp-action="Privacy" class="text-muted">Privacy</a>
         </div>
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script> 
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/auth.js" asp-append-version="true"></script>
 
     <script>
-        // AJAX logout handler
         $(document).on("click", "#btnLogout", function (e) {
             e.preventDefault();
             $.post("/Account/Logout", function (res) {

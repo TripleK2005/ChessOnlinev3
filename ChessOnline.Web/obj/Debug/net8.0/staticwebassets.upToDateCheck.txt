@@ -3,6 +3,8 @@ wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\img\auth-background.jpg
 wwwroot\js\auth.js
+wwwroot\js\chess-play.js
+wwwroot\js\game.js
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap.css
 wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
@@ -49,6 +51,8 @@ wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
 wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
 wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
 wwwroot\lib\bootstrap\LICENSE
+wwwroot\lib\chessboardjs\chessboard-1.0.0.min.css
+wwwroot\lib\chessboardjs\chessboard-1.0.0.min.js
 wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map

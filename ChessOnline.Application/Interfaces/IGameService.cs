@@ -19,5 +19,6 @@ namespace ChessOnline.Application.Interfaces
         Task<GamePlay?> GetGamePlayByLobbyIdAsync(Guid lobbyId);
         Task<GameLobby?> GetLobbyByIdAsync(Guid lobbyId);
         Task<bool> TryUpdateBoardStateAsync(Guid lobbyId, string fen, string move);
+        Task<bool> UpdateClocksAsync(Guid lobbyId, int whiteRemainingSeconds, int blackRemainingSeconds);
     }
 }

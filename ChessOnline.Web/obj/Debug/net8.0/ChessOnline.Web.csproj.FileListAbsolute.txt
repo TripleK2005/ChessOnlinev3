@@ -162,3 +162,4 @@ D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Web\obj\Debug\net8.0\ChessOnli
 D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Web\obj\Debug\net8.0\ChessOnline.Web.genruntimeconfig.cache
 D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Web\obj\Debug\net8.0\ref\ChessOnline.Web.dll
 D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Web\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+D:\BTL_LTW_ChessOnline_v3\ChessOnline\ChessOnline.Web\obj\Debug\net8.0\ChessOnline.Web.sourcelink.json
