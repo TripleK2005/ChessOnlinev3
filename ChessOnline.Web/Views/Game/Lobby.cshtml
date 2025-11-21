@@ -1,0 +1,251 @@
+@{
+    ViewData["Title"] = "Game Lobby";
+}
+
+<div class="container py-5 fade-in">
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 fw-bold mb-3">Game Lobby</h1>
+            <p class="lead text-muted">Create a new game or join an existing battle.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Create Lobby Section -->
+        <div class="col-lg-4">
+            <div class="glass-card p-4 h-100">
+                <h3 class="mb-4"><i class="fa-solid fa-plus-circle me-2 text-primary"></i>Create Game</h3>
+                <form id="createForm">
+                    <div class="mb-3">
+                        <label for="name" class="form-label text-muted">Lobby Name</label>
+                        <input id="name" class="form-control bg-dark text-light border-secondary" placeholder="e.g. Grandmaster Duel" />
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input id="isPublic" class="form-check-input" type="checkbox" checked />
+                        <label class="form-check-label" for="isPublic">Public Match</label>
+                    </div>
+
+                    <div class="mb-3" id="passwordRow" style="display:none;">
+                        <label for="password" class="form-label text-muted">Password</label>
+                        <input id="password" type="password" class="form-control bg-dark text-light border-secondary" placeholder="Secret Code" />
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <label for="initialTime" class="form-label text-muted">Time (sec)</label>
+                            <input id="initialTime" type="number" class="form-control bg-dark text-light border-secondary" value="300" min="60" />
+                        </div>
+                        <div class="col-6">
+                            <label for="increment" class="form-label text-muted">Inc (sec)</label>
+                            <input id="increment" type="number" class="form-control bg-dark text-light border-secondary" value="3" min="0" />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill">
+                        Create Lobby
+                    </button>
+                </form>
+                <div id="createResult" class="mt-3"></div>
+            </div>
+        </div>
+
+        <!-- Lobby List Section -->
+        <div class="col-lg-8">
+            <div class="glass-card p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0"><i class="fa-solid fa-list-ul me-2 text-secondary"></i>Available Games</h3>
+                    <button id="refreshBtn" class="btn btn-outline-light btn-sm rounded-pill">
+                        <i class="fa-solid fa-rotate-right me-1"></i> Refresh
+                    </button>
+                </div>
+
+                <!-- Join Private Modal Trigger (Hidden) -->
+                <div id="joinPrivateSection" class="mb-3" style="display:none;">
+                    <div class="input-group">
+                        <input id="joinLobbyId" type="hidden" />
+                        <input id="joinPassword" type="password" class="form-control bg-dark text-light border-secondary" placeholder="Enter Password for Private Game" />
+                        <button id="confirmJoinBtn" class="btn btn-success">Join</button>
+                    </div>
+                    <div id="joinResult" class="mt-2"></div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0" style="background: transparent;">
+                        <thead>
+                            <tr class="text-muted">
+                                <th scope="col">Name</th>
+                                <th scope="col">Host</th>
+                                <th scope="col">Time Control</th>
+                                <th scope="col" class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lobbyList">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="emptyState" class="text-center py-5 text-muted" style="display:none;">
+                    <i class="fa-solid fa-chess-board fa-3x mb-3 opacity-50"></i>
+                    <p>No active lobbies found. Create one!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const createForm = document.getElementById('createForm');
+            const isPublic = document.getElementById('isPublic');
+            const passwordRow = document.getElementById('passwordRow');
+            const createResult = document.getElementById('createResult');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const lobbyList = document.getElementById('lobbyList');
+            const emptyState = document.getElementById('emptyState');
+            const joinPrivateSection = document.getElementById('joinPrivateSection');
+            const joinPasswordInput = document.getElementById('joinPassword');
+            const joinLobbyIdInput = document.getElementById('joinLobbyId');
+            const confirmJoinBtn = document.getElementById('confirmJoinBtn');
+            const joinResult = document.getElementById('joinResult');
+
+            // Toggle password input
+            isPublic.addEventListener('change', () => {
+                passwordRow.style.display = isPublic.checked ? 'none' : 'block';
+            });
+
+            // Create Lobby
+            createForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                createResult.innerHTML = '<div class="spinner-border spinner-border-sm text-primary" role="status"></div> Creating...';
+                
+                const dto = {
+                    name: document.getElementById('name').value || '',
+                    isPublic: document.getElementById('isPublic').checked,
+                    password: document.getElementById('password').value || null,
+                    initialTimeSeconds: parseInt(document.getElementById('initialTime').value || '300', 10),
+                    incrementSeconds: parseInt(document.getElementById('increment').value || '3', 10)
+                };
+
+                try {
+                    // Note: Using absolute path based on controller attribute routing assumption
+                    const res = await fetch('/create-lobby', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dto)
+                    });
+
+                    const json = await res.json();
+                    if (!res.ok) {
+                        createResult.innerHTML = `<div class="text-danger mt-2"><i class="fa-solid fa-circle-exclamation me-1"></i> ${json?.message || res.statusText}</div>`;
+                        return;
+                    }
+
+                    createResult.innerHTML = `<div class="text-success mt-2"><i class="fa-solid fa-check-circle me-1"></i> Created! Redirecting...</div>`;
+                    setTimeout(() => window.location.href = `/Game/Play/${json.lobbyId}`, 1000);
+                } catch (err) {
+                    createResult.innerHTML = `<div class="text-danger mt-2">Network error</div>`;
+                    console.error(err);
+                }
+            });
+
+            // Join Private Logic
+            confirmJoinBtn.addEventListener('click', async () => {
+                const lobbyId = joinLobbyIdInput.value;
+                const password = joinPasswordInput.value;
+                await joinLobby(lobbyId, password);
+            });
+
+            async function joinLobby(lobbyId, password = null) {
+                try {
+                    const res = await fetch('/join-lobby', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ lobbyId, password })
+                    });
+
+                    const json = await res.json();
+                    if (!res.ok) {
+                        joinResult.innerHTML = `<div class="text-danger small">${json?.message || 'Failed to join'}</div>`;
+                        return;
+                    }
+
+                    window.location.href = `/Game/Play/${json.lobbyId}`;
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+
+            // Load Lobbies
+            async function loadLobbies() {
+                lobbyList.innerHTML = '<tr><td colspan="4" class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></td></tr>';
+                emptyState.style.display = 'none';
+
+                try {
+                    const res = await fetch('/list-lobbies');
+                    if (!res.ok) throw new Error('Failed to load');
+
+                    const items = await res.json();
+                    lobbyList.innerHTML = '';
+
+                    if (!items || items.length === 0) {
+                        emptyState.style.display = 'block';
+                        return;
+                    }
+
+                    items.forEach(l => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>
+                                <div class="fw-bold text-white">${l.name}</div>
+                                <small class="text-muted" style="font-size: 0.75rem;">ID: ${l.id.substring(0, 8)}...</small>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="/img/default-avatar.png" class="rounded-circle me-2" width="24" height="24">
+                                    <span>${l.player1Name || 'Unknown'}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-dark border border-secondary rounded-pill">
+                                    ${l.initialTimeSeconds / 60}m + ${l.incrementSeconds}s
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-primary rounded-pill px-3 join-btn" data-id="${l.id}" data-public="${!l.hasPassword}">
+                                    Join
+                                </button>
+                            </td>
+                        `;
+                        lobbyList.appendChild(tr);
+                    });
+
+                    // Attach event listeners to new buttons
+                    document.querySelectorAll('.join-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const id = e.target.dataset.id;
+                            const isPublic = e.target.dataset.public === 'true';
+
+                            if (isPublic) {
+                                joinLobby(id);
+                            } else {
+                                // Show password input
+                                joinLobbyIdInput.value = id;
+                                joinPrivateSection.style.display = 'block';
+                                joinPasswordInput.focus();
+                                joinResult.innerHTML = '';
+                            }
+                        });
+                    });
+
+                } catch (err) {
+                    lobbyList.innerHTML = `<tr><td colspan="4" class="text-center text-danger">Failed to load lobbies</td></tr>`;
+                }
+            }
+
+            refreshBtn.addEventListener('click', loadLobbies);
+            loadLobbies();
+        })();
+    </script>
+}

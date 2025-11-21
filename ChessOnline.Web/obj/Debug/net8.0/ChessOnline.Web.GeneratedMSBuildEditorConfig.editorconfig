@@ -32,8 +32,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/BTL_LTW_ChessOnline_v3/ChessOnline/ChessOnline.Web/Views/Account/_ViewStart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxfVmlld1N0YXJ0LmNzaHRtbA==
+[D:/BTL_LTW_ChessOnline_v3/ChessOnline/ChessOnline.Web/Views/Game/Lobby.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FtZVxMb2JieS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/BTL_LTW_ChessOnline_v3/ChessOnline/ChessOnline.Web/Views/Game/Play.cshtml]

@@ -3,16 +3,20 @@ using ChessOnline.Infrastructure.Services;
 using ChessOnline.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using ChessOnline.Application.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using ChessOnline.Domain.Entities;
 
 namespace ChessOnline.Web.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
+        private readonly UserManager<User> _userManager;
 
-        public AccountController(IUserService userService)
+        public AccountController(IUserService userService, UserManager<User> userManager)
         {
             _userService = userService;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -80,6 +84,16 @@ namespace ChessOnline.Web.Controllers
 
 
 
-       
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login");
+
+            var profile = await _userService.GetMyProfileAsync(userId);
+            if (profile == null) return NotFound();
+
+            return View(profile);
+        }
     }
 }

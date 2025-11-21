@@ -1,43 +1,158 @@
-﻿@model ChessOnline.Web.Models.PlayViewModel
-
+﻿
 @{
-    ViewData["Title"] = "Play";
+    ViewData["Title"] = "Play Chess";
+    var lobbyId = ViewBag.LobbyId;
+    var userId = ViewBag.UserId;
 }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css" />
+@section Styles {
+    <link rel="stylesheet" href="~/lib/chessboardjs/chessboard-1.0.0.min.css" />
+    <style>
+        .board-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .clock-box {
+            font-family: 'Courier New', monospace;
+            font-size: 2rem;
+            font-weight: bold;
+            background: #000;
+            color: #0f0;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid #333;
+            text-align: center;
+            width: 150px;
+        }
+        .clock-box.active {
+            box-shadow: 0 0 15px #0f0;
+            border-color: #0f0;
+        }
+        .clock-box.low-time {
+            color: #f00;
+            box-shadow: 0 0 15px #f00;
+            border-color: #f00;
+        }
+        .chat-box {
+            height: 400px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .chat-message {
+            margin-bottom: 8px;
+            word-wrap: break-word;
+        }
+        .chat-user {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+    </style>
+}
 
-<div class="container mt-3">
-    <h3>Chess - Play</h3>
+<div class="container-fluid py-4 fade-in">
+    <input type="hidden" id="lobbyId" value="@lobbyId" />
+    <input type="hidden" id="currentUserId" value="@userId" />
 
-    <div class="row">
-        <div class="col-md-6">
-            <div id="board" style="width: 480px"></div>
+    <div class="row g-4">
+        <!-- Left: Game Info & Chat -->
+        <div class="col-lg-3 order-2 order-lg-1">
+            <div class="glass-card p-3 h-100 d-flex flex-column">
+                <h4 class="mb-3"><i class="fa-solid fa-comments me-2 text-secondary"></i>Chat</h4>
+                <div id="chatMessages" class="chat-box flex-grow-1 mb-3 border border-secondary">
+                    <!-- Messages -->
+                </div>
+                <form id="chatForm" class="d-flex gap-2">
+                    <input id="chatInput" class="form-control bg-dark text-light border-secondary" placeholder="Say something..." autocomplete="off" />
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+            </div>
         </div>
-        <div class="col-md-6">
-            <div class="mb-2">
-                <strong>White</strong>: <span id="whiteName">White</span>
-                <div id="whiteClock" style="font-size:1.5rem">00:00</div>
+
+        <!-- Center: Chess Board -->
+        <div class="col-lg-6 order-1 order-lg-2">
+            <div class="d-flex justify-content-between align-items-center mb-2 px-4">
+                <div class="d-flex align-items-center">
+                    <img src="/img/default-avatar.png" class="rounded-circle me-2" width="40" height="40">
+                    <div>
+                        <h5 class="mb-0" id="topPlayerName">Opponent</h5>
+                        <small class="text-muted">Rating: ???</small>
+                    </div>
+                </div>
+                <div id="topClock" class="clock-box">00:00</div>
             </div>
-            <div class="mb-2">
-                <strong>Black</strong>: <span id="blackName">Black</span>
-                <div id="blackClock" style="font-size:1.5rem">00:00</div>
+
+            <div class="board-container">
+                <div id="myBoard" style="width: 100%"></div>
             </div>
-            <div id="status" class="mt-3"></div>
+
+            <div class="d-flex justify-content-between align-items-center mt-2 px-4">
+                <div class="d-flex align-items-center">
+                    <img src="/img/default-avatar.png" class="rounded-circle me-2" width="40" height="40">
+                    <div>
+                        <h5 class="mb-0" id="bottomPlayerName">You</h5>
+                        <small class="text-muted">Rating: ???</small>
+                    </div>
+                </div>
+                <div id="bottomClock" class="clock-box">00:00</div>
+            </div>
+            
+            <div class="text-center mt-3">
+                <button id="flipBtn" class="btn btn-outline-light rounded-pill"><i class="fa-solid fa-rotate me-2"></i>Flip Board</button>
+                <span id="gameStatus" class="ms-3 badge bg-warning text-dark">Connecting...</span>
+            </div>
+        </div>
+
+        <!-- Right: Move History & Controls -->
+        <div class="col-lg-3 order-3">
+            <div class="glass-card p-3 h-100">
+                <h4 class="mb-3"><i class="fa-solid fa-list-ol me-2 text-secondary"></i>Moves</h4>
+                <div id="moveHistory" class="border border-secondary rounded p-2 bg-dark" style="height: 400px; overflow-y: auto; font-family: monospace;">
+                    <table class="table table-dark table-sm table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>White</th>
+                                <th>Black</th>
+                            </tr>
+                        </thead>
+                        <tbody id="moveListBody">
+                            <!-- Moves -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3 d-grid gap-2">
+                    <button class="btn btn-danger" disabled><i class="fa-solid fa-flag me-2"></i>Resign</button>
+                    <button class="btn btn-secondary" disabled><i class="fa-solid fa-handshake me-2"></i>Offer Draw</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Game Over Modal -->
+<div class="modal fade" id="gameOverModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">Game Over</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <h2 id="winnerText" class="mb-3">White Wins!</h2>
+                <p id="reasonText" class="text-muted">Checkmate</p>
+            </div>
+            <div class="modal-footer border-secondary justify-content-center">
+                <a asp-controller="Game" asp-action="Lobby" class="btn btn-primary">Back to Lobby</a>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <script>
-        // pass server model data to JS
-        window.chessModel = {
-            LobbyId: '@Model.LobbyId',
-            CurrentUserId: '@Model.CurrentUserId'
-        };
-    </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@7.0.5/dist/browser/signalr.min.js"></script>
-    <script src="~/js/chess-play.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js" integrity="sha512-xRllwz3Fh53Bi4A30n3V/ujq3g5g1Qo/Qz3H31T3l/u8+Zl6K3Qz1J14u/8r4G8d8k4d8k4d8k4d8k4d8w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+    <script src="~/js/game.js" asp-append-version="true"></script>
 }

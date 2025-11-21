@@ -13,5 +13,10 @@ namespace ChessOnline.Web.Hubs
         {
             return Groups.RemoveFromGroupAsync(Context.ConnectionId, lobbyId);
         }
+
+        public async Task SendMessage(string lobbyId, string user, string message)
+        {
+            await Clients.Group(lobbyId).SendAsync("ReceiveMessage", user, message);
+        }
     }
 }
